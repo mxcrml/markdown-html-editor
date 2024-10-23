@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css"> 
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWZpbGUtY29kZSI+PHBhdGggZD0iTTEwIDEyLjUgOCAxNWwyIDIuNSIvPjxwYXRoIGQ9Im0xNCAxMi41IDIgMi41LTIgMi41Ii8+PHBhdGggZD0iTTE0IDJ2NGEyIDIgMCAwIDAgMiAyaDQiLz48cGF0aCBkPSJNMTUgMkg2YTIgMiAwIDAgMC0yIDJ2MTZhMiAyIDAgMCAwIDIgMmgxMmEyIDIgMCAwIDAgMi0yVjd6Ii8+PC9zdmc+">
+  <title>Markdown/HTML Editor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js" integrity="sha512-LhccdVNGe2QMEfI3x4DVV3ckMRe36TfydKss6mJpdHjNFiV07dFpS2xzeZedptKZrwxfICJpez09iNioiSZ3hA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turndown/7.2.0/turndown.min.js" integrity="sha512-sJzEecN5Nk8cq81zKtGq6/z9Z/r3q38zV9enY75IVxiG7ybtlNUt864sL4L1Kf36bYIwxTMVKQOtU4VhD7hGrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <h1>Markdown/HTML Editor</h1>
+  <div class="buttons">
+    <button class="import" onclick="pasteClipboard()">Paste Clipboard</button>
+    <button onclick="copyMarkdown()">Copy Markdown</button>
+    <button onclick="copyHTML()">Copy HTML</button>
+    <button onclick="copyPreview()">Copy Preview</button>
+	<button class="toggle-mode" onclick="toggleMode()"></button>
+  </div>
+  <div class="container">
+    <div class="left-column">
+      <div class="editor">
+        <h2>Markdown</h2>
+        <textarea id="markdownEditor" placeholder="Edit your Markdown here..."></textarea>
+      </div>
+    </div>
+    <div class="right-column">
+      <div class="preview">
+        <h2>Preview</h2>
+        <div id="htmlOutput" class="output"></div>
+      </div>
+      <div class="html-code">
+        <h2>HTML</h2>
+        <textarea id="htmlEditor" placeholder="Edit your HTML here..."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    Powered by <em><a href="https://github.com/thecodrr/showdown" target="_blank">Showdown</a></em> & <em><a href="https://github.com/mixmark-io/turndown" target="_blank">Turndown</a></em> – Made with ❤️ by <a href="https://astralrank.com" target="_blank">Astralrank</a> – <em>v.1.0</em>
+  </div>
+</body>
+</html>
