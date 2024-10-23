@@ -176,6 +176,10 @@ body.dark-mode .preview .output {
   border-color: #666;
 }
 
+body.dark-mode .preview .output a {
+  color: #f0f0f0;
+}
+
 button.toggle-mode::before {
   content: "🌑";
 }
