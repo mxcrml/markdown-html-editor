@@ -67,4 +67,4 @@ This Markdown-HTML editor is part of an experiment done with ChatGPT o1.preview 
 
 ## Contact
 
-For any questions or feedback, please reach out to [your-email@example.com](mailto:maxime@astralrank.com).
+For any questions or feedback, please reach out to [maxime@astralrank.com](mailto:maxime@astralrank.com).
