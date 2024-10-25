@@ -1,3 +1,4 @@
+/* Body*/
 body {
   margin: 0;
   font-family: "Courier New", Courier, "Lucida Console", monospace;
@@ -8,18 +9,19 @@ body {
   color: #000000;
 }
 
-/* Mode nuit */
 body.dark-mode {
   background-color: #1e1e1e;
   color: #f5f5f5;
 }
 
+/* Title */
 h1 {
   text-align: center;
   margin: 20px 0;
   flex-shrink: 0;
 }
 
+/* Buttons */
 .buttons {
   display: flex;
   justify-content: center;
@@ -30,7 +32,7 @@ h1 {
 .buttons button {
   margin: 0 10px;
   padding: 10px 20px;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  font-family: inherit;
   font-size: 14px;
   cursor: pointer;
   border-radius: 5px;
@@ -50,29 +52,29 @@ button.import {
 
 button.toggle-mode {
   background-color: #ffcc00;
-  color: #000;
+  color: #000000;
   border-color: #ffcc00;
 }
 
 body.dark-mode button.toggle-mode {
-  background-color: #666;
-  color: #fff;
-  border-color: #666;
+  background-color: #666666;
+  color: #ffffff;
+  border-color: #666666;
 }
 
+/* Main container */
 .container {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  height: 100%;
+  height: 80%;
 }
 
+/* Colonnes */
 .left-column,
 .right-column {
   height: 100%;
   overflow: hidden;
-  gap: 20px;
 }
 
 .left-column {
@@ -91,6 +93,7 @@ body.dark-mode button.toggle-mode {
   box-sizing: border-box;
 }
 
+/* Sections */
 .editor,
 .preview,
 .html-code {
@@ -98,7 +101,7 @@ body.dark-mode button.toggle-mode {
   flex-direction: column;
   overflow: hidden;
   height: 100%;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  font-family: inherit;
 }
 
 .editor h2,
@@ -108,16 +111,17 @@ body.dark-mode button.toggle-mode {
   flex-shrink: 0;
 }
 
+/* Text areas and preview */
 .editor textarea,
 .html-code textarea,
 .preview .output {
   flex: 1;
-  resize: none;
   width: 100%;
   padding: 10px;
   font-size: 16px;
   box-sizing: border-box;
   overflow-y: auto;
+  resize: none; /* no resize */
 }
 
 .preview .output {
@@ -125,10 +129,70 @@ body.dark-mode button.toggle-mode {
   border: 1px solid #ccc;
 }
 
+/* Dark mode preview */
+body.dark-mode .preview .output {
+  background-color: #333333;
+  border-color: #666666;
+}
+
+body.dark-mode .preview .output a {
+  color: #f0f0f0;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  background-color: #f0f0f0;
+  flex-shrink: 0;
+}
+
+body.dark-mode .footer {
+  background-color: #333333;
+}
+
+body.dark-mode .footer a {
+  color: #f0f0f0;
+}
+
+/* Toggle emojis */
+button.toggle-mode::before {
+  content: "🌑";
+}
+
+body.dark-mode button.toggle-mode::before {
+  content: "☀️";
+}
+
+/* Options */
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
+.option label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.option select {
+  padding: 5px;
+}
+
+/* Responsive */
 @media screen and (max-width: 960px) {
   .container {
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
     height: auto;
   }
 
@@ -147,63 +211,4 @@ body.dark-mode button.toggle-mode {
   .html-code {
     height: 400px;
   }
-}
-
-.footer {
-  text-align: center;
-  padding: 10px;
-  font-size: 14px;
-  background-color: #f0f0f0;
-  flex-shrink: 0;
-}
-
-body.dark-mode .footer {
-  background-color: #333;
-}
-
-body.dark-mode .footer a {
-  color: #f0f0f0;
-}
-
-body.dark-mode button.toggle-mode {
-  background-color: #666;
-  color: #fff;
-  border-color: #666;
-}
-
-body.dark-mode .preview .output {
-  background-color: #333;
-  border-color: #666;
-}
-
-body.dark-mode .preview .output a {
-  color: #f0f0f0;
-}
-
-button.toggle-mode::before {
-  content: "🌑";
-}
-
-body.dark-mode button.toggle-mode::before {
-  content: "☀️";
-}
-
-.options {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 10px;
-  gap: 10px;
-}
-.option {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-}
-.option label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size:1em;
-}
-.option select {
-  padding: 5px;
 }
