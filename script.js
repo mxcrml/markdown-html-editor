@@ -1,5 +1,49 @@
 var converter = new showdown.Converter({ tables: true });
-var turndownService = new TurndownService();
+
+function getTurndownOptions() {
+  return {
+    headingStyle: document.getElementById('headingStyle').value,
+    bulletListMarker: document.getElementById('bulletListMarker').value,
+    codeBlockStyle: document.getElementById('codeBlockStyle').value,
+    emDelimiter: document.getElementById('emDelimiter').value,
+    strongDelimiter: document.getElementById('strongDelimiter').value,
+    linkStyle: document.getElementById('linkStyle').value,
+    preformattedCode: document.getElementById('preformattedCode').value === 'true'
+  };
+}
+
+function savePreferences() {
+  var options = getTurndownOptions();
+  localStorage.setItem('turndownOptions', JSON.stringify(options));
+}
+
+function loadPreferences() {
+  var savedOptions = localStorage.getItem('turndownOptions');
+  if (savedOptions) {
+    savedOptions = JSON.parse(savedOptions);
+    for (var key in savedOptions) {
+      var element = document.getElementById(key);
+      if (element) {
+        element.value = savedOptions[key];
+      }
+    }
+    return savedOptions;
+  } else {
+    // Load default if no preferences saved
+    return {
+      headingStyle: 'atx',
+      bulletListMarker: '-',
+      codeBlockStyle: 'fenced',
+      emDelimiter: '*',
+      strongDelimiter: '**',
+      linkStyle: 'inlined',
+      preformattedCode:false
+    };
+  }
+}
+
+var initialOptions = loadPreferences();
+var turndownService = new TurndownService(initialOptions);
 var markdownEditor = document.getElementById('markdownEditor');
 var htmlEditor = document.getElementById('htmlEditor');
 var htmlOutput = document.getElementById('htmlOutput');
@@ -170,46 +214,4 @@ function insertIntoEditor(markdown) {
 
 function toggleMode() {
   document.body.classList.toggle('dark-mode');
-}
-
-function getTurndownOptions() {
-  return {
-    headingStyle: document.getElementById('headingStyle').value,
-    bulletListMarker: document.getElementById('bulletListMarker').value,
-    codeBlockStyle: document.getElementById('codeBlockStyle').value,
-    emDelimiter: document.getElementById('emDelimiter').value,
-    strongDelimiter: document.getElementById('strongDelimiter').value,
-    linkStyle: document.getElementById('linkStyle').value,
-    preformattedCode: document.getElementById('preformattedCode').value === 'true'
-  };
-}
-
-function savePreferences() {
-  var options = getTurndownOptions();
-  localStorage.setItem('turndownOptions', JSON.stringify(options));
-}
-
-function loadPreferences() {
-  var savedOptions = localStorage.getItem('turndownOptions');
-  if (savedOptions) {
-    savedOptions = JSON.parse(savedOptions);
-    for (var key in savedOptions) {
-      var element = document.getElementById(key);
-      if (element) {
-        element.value = savedOptions[key];
-      }
-    }
-    return savedOptions;
-  } else {
-    // Load default if no preferences saved
-    return {
-      headingStyle: 'atx',
-      bulletListMarker: '-',
-      codeBlockStyle: 'fenced',
-      emDelimiter: '*',
-      strongDelimiter: '**',
-      linkStyle: 'inlined',
-      preformattedCode:false
-    };
-  }
 }
