@@ -3,7 +3,7 @@
 This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdown.js](https://github.com/showdownjs/showdown)* and *[Turndown.js](https://github.com/domchristie/turndown)*. It enables seamless writing, conversion, and real-time preview of both Markdown and HTML, making it an ideal tool for SEO professionals, copywriters, and anyone frequently switching between these formats.
 
 ## Preview
-<img width="100%" alt="markdown-html-editor-v1-preview-rich" src="https://github.com/user-attachments/assets/7cc2b82d-29f9-4614-ae4b-c5866af5a51e">
+<img width="100%" alt="markdown-html-editor-v1-preview-rich" src="https://github.com/user-attachments/assets/fe21927d-4207-4535-b7d2-5970557db029">
 
 ## Features
 
@@ -12,7 +12,7 @@ This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdow
 - **Live Preview**: View the HTML-rendered output of your Markdown instantly.
 - **Clipboard Support**: Paste content directly from your clipboard into the Markdown editor.
 - **Copy Functionality**: Easily copy the Markdown, HTML, or the previewed content to your clipboard with a single click.
-- **Customizable Turndown Options**: Adjust conversion settings for HTML to Markdown conversion via a user-friendly options panel.
+- **Customizable Turndown Options**: Adjust conversion settings for HTML to Markdown conversion via a user-friendly options panel. <br><em><a href="https://github.com/mixmark-io/turndown#options" target="_blank">Learn more about Turdown options</a></em>
 - **Persistent Preferences**: Your Turndown settings are saved and loaded automatically using `localStorage`.
 - **Dark/Light Mode Toggle**: Switch between light and dark themes using the toggle button, which dynamically updates its label based on the current mode.
 
