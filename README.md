@@ -3,7 +3,7 @@
 This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdown.js](https://github.com/showdownjs/showdown)* and *[Turndown.js](https://github.com/domchristie/turndown)*. It enables seamless writing, conversion, and real-time preview of both Markdown and HTML, making it an ideal tool for SEO professionals, copywriters, and anyone frequently switching between these formats.
 
 ## Preview
-<img width="100%" alt="markdown-html-editor-v1-preview-rich" src="https://github.com/user-attachments/assets/7c150916-8f93-4bb4-adc4-b8b892207e53">
+<img width="100%" alt="markdown-html-editor-v1-preview-rich" src="https://github.com/user-attachments/assets/7cc2b82d-29f9-4614-ae4b-c5866af5a51e">
 
 ## Features
 
