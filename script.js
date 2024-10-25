@@ -19,13 +19,7 @@ function updateMarkdown() {
   if (isUpdating) return;
   isUpdating = true;
   var htmlText = htmlEditor.value;
-
-  var turndownService = new TurndownService({
-    headingStyle: 'atx',
-    bulletListMarker: '-',
-    emDelimiter: '*',
-    codeBlockStyle: 'fenced'
-  });
+  turndownService = new TurndownService(getTurndownOptions());
 
   turndownService.addRule('tables', {
     filter: function (node) {
@@ -63,6 +57,13 @@ function updateMarkdown() {
 
 markdownEditor.addEventListener('input', updateHTML);
 htmlEditor.addEventListener('input', updateMarkdown);
+var optionElements = document.querySelectorAll('.option select');
+  optionElements.forEach(function(element) {
+    element.addEventListener('change', function() {
+      savePreferences();
+      updateMarkdown();
+    });
+  });
 updateHTML();
 
 function copyMarkdown() {
@@ -126,12 +127,9 @@ function pasteClipboard() {
 }
 
 function convertAndInsert(content, isHTML) {
-  var turndownService = new TurndownService({
-    headingStyle: 'atx',
-    bulletListMarker: '-',
-    emDelimiter: '*',
-    codeBlockStyle: 'fenced'
-  });
+  
+  var initialOptions = loadPreferences();
+  var turndownService = new TurndownService(initialOptions);
 
   turndownService.addRule('tables', {
     filter: ['table'],
@@ -172,4 +170,46 @@ function insertIntoEditor(markdown) {
 
 function toggleMode() {
   document.body.classList.toggle('dark-mode');
+}
+
+function getTurndownOptions() {
+  return {
+    headingStyle: document.getElementById('headingStyle').value,
+    bulletListMarker: document.getElementById('bulletListMarker').value,
+    codeBlockStyle: document.getElementById('codeBlockStyle').value,
+    emDelimiter: document.getElementById('emDelimiter').value,
+    strongDelimiter: document.getElementById('strongDelimiter').value,
+    linkStyle: document.getElementById('linkStyle').value,
+    preformattedCode: document.getElementById('preformattedCode').value === 'true'
+  };
+}
+
+function savePreferences() {
+  var options = getTurndownOptions();
+  localStorage.setItem('turndownOptions', JSON.stringify(options));
+}
+
+function loadPreferences() {
+  var savedOptions = localStorage.getItem('turndownOptions');
+  if (savedOptions) {
+    savedOptions = JSON.parse(savedOptions);
+    for (var key in savedOptions) {
+      var element = document.getElementById(key);
+      if (element) {
+        element.value = savedOptions[key];
+      }
+    }
+    return savedOptions;
+  } else {
+    // Load default if no preferences saved
+    return {
+      headingStyle: 'atx',
+      bulletListMarker: '-',
+      codeBlockStyle: 'fenced',
+      emDelimiter: '*',
+      strongDelimiter: '**',
+      linkStyle: 'inlined',
+      preformattedCode:false
+    };
+  }
 }

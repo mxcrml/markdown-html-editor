@@ -18,6 +18,59 @@
     <button onclick="copyPreview()">Copy Preview</button>
 	<button class="toggle-mode" onclick="toggleMode()"></button>
   </div>
+  <div class="options">
+    <div class="option">
+      <label for="headingStyle">Title</label>
+      <select id="headingStyle">
+        <option value="setext">setext</option>
+        <option value="atx" selected>atx</option>
+      </select>
+    </div>
+    <div class="option">
+      <label for="bulletListMarker">Bullet</label>
+      <select id="bulletListMarker">
+        <option value="*">*</option>
+        <option value="-" selected>-</option>
+        <option value="+">+</option>
+      </select>
+    </div>
+    <div class="option">
+      <label for="codeBlockStyle">Block</label>
+      <select id="codeBlockStyle">
+        <option value="indented">indented</option>
+        <option value="fenced" selected>fenced</option>
+      </select>
+    </div>
+    <div class="option">
+      <label for="emDelimiter">Em</label>
+      <select id="emDelimiter">
+        <option value="_">_</option>
+        <option value="*" selected>*</option>
+      </select>
+    </div>
+    <div class="option">
+      <label for="strongDelimiter">Strong</label>
+      <select id="strongDelimiter">
+        <option value="**" selected>**</option>
+        <option value="__">__</option>
+      </select>
+    </div>
+    <div class="option">
+      <label for="linkStyle">Link</label>
+      <select id="linkStyle">
+        <option value="inlined" selected>inline</option>
+        <option value="referenced">referenced</option>
+      </select>
+    </div>
+    <div class="option">
+      <label for="preformattedCode">Preformatted Code</label>
+      <select id="preformattedCode">
+        <option value="false" selected>false</option>
+        <option value="true">true</option>
+      </select>
+    </div>
+  </div>
+  
   <div class="container">
     <div class="left-column">
       <div class="editor">

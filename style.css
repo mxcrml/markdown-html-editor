@@ -187,3 +187,23 @@ button.toggle-mode::before {
 body.dark-mode button.toggle-mode::before {
   content: "☀️";
 }
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+  gap: 10px;
+}
+.option {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+.option label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size:1em;
+}
+.option select {
+  padding: 5px;
+}

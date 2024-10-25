@@ -12,6 +12,8 @@ This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdow
 - **Live Preview**: View the HTML-rendered output of your Markdown instantly.
 - **Clipboard Support**: Paste content directly from your clipboard into the Markdown editor.
 - **Copy Functionality**: Easily copy the Markdown, HTML, or the previewed content to your clipboard with a single click.
+- **Customizable Turndown Options**: Adjust conversion settings for HTML to Markdown conversion via a user-friendly options panel.
+- **Persistent Preferences**: Your Turndown settings are saved and loaded automatically using `localStorage`.
 - **Dark/Light Mode Toggle**: Switch between light and dark themes using the toggle button, which dynamically updates its label based on the current mode.
 
 ## Installation
@@ -40,18 +42,22 @@ This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdow
 3. **Live Preview**:
    - The live HTML-rendered output is also shown in a preview box, so you can see how your Markdown will appear when rendered.
 
-4. **Clipboard Functionality**:
-   - **Paste**: Use the "Paste Clipboard" button to directly paste content from your clipboard into the Markdown editor.
+4. **Adjust Turndown Options**:
+   - Use the options panel below the buttons to customize how HTML is converted back to Markdown.
+   - Options include heading style, bullet list markers, code block style, emphasis delimiters, and more.
+   - Changes are applied in real-time, and your preferences are saved for future sessions.
+
+5. **Clipboard Functionality**:
    - **Copy**: Use the respective "Copy" buttons to copy the Markdown, HTML, or previewed content.
 
-5. **Dark/Light Mode**:
+6. **Dark/Light Mode**:
    - Click the "Dark Mode/Light Mode" button to toggle between the light and dark themes. The button's text dynamically updates based on the current mode.
 
 ## File Structure
 
-- **index.html**: The main HTML file containing the layout of the editor.
-- **style.css**: Contains the styling for both light and dark themes.
-- **script.js**: Handles the core functionality, including the conversion between Markdown and HTML, the clipboard features, and the dark/light mode toggle.
+- **index.html**: The main HTML file containing the layout of the editor and the options panel.
+- **style.css**: Contains the styling for both light and dark themes, as well as styles for the options panel.
+- **script.js**: Handles the core functionality, including the conversion between Markdown and HTML, the options management, clipboard features, and the dark/light mode toggle.
 
 ## Technologies Used
 
