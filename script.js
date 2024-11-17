@@ -29,6 +29,7 @@ function loadPreferences() {
     }
     return savedOptions;
   } else {
+    // Load default if no preferences saved
     return {
       headingStyle: 'atx',
       bulletListMarker: '-',
@@ -36,58 +37,33 @@ function loadPreferences() {
       emDelimiter: '*',
       strongDelimiter: '**',
       linkStyle: 'inlined',
-      preformattedCode: false
+      preformattedCode:false
     };
   }
 }
 
-function addCustomRules(turndownService) {
-  turndownService.addRule('nestedList', {
-    filter: ['ul', 'ol'],
-    replacement: function (content, node, options) {
-      var output = '';
-      var indentLevel = -1;
+var initialOptions = loadPreferences();
+var turndownService = new TurndownService(initialOptions);
+var markdownEditor = document.getElementById('markdownEditor');
+var htmlEditor = document.getElementById('htmlEditor');
+var htmlOutput = document.getElementById('htmlOutput');
+var isUpdating = false;
 
-      function processList(node, indentLevel) {
-        var listItems = node.childNodes;
-        var result = '';
-        indentLevel++;
+function updateHTML() {
+  if (isUpdating) return;
+  isUpdating = true;
+  var markdownText = markdownEditor.value;
+  var html = converter.makeHtml(markdownText);
+  htmlEditor.value = html;
+  htmlOutput.innerHTML = html;
+  isUpdating = false;
+}
 
-        for (var i = 0; i < listItems.length; i++) {
-          var listItem = listItems[i];
-
-          if (listItem.nodeName === 'LI') {
-            var prefix = '';
-            if (node.nodeName === 'OL') {
-              prefix = '1. ';
-            } else {
-              prefix = options.bulletListMarker + ' ';
-            }
-
-            var indent = '    '.repeat(indentLevel);
-
-            var itemContent = '';
-
-            for (var j = 0; j < listItem.childNodes.length; j++) {
-              var child = listItem.childNodes[j];
-
-              if (child.nodeName === 'OL' || child.nodeName === 'UL') {
-                itemContent += '\n' + processList(child, indentLevel);
-              } else {
-                itemContent += turndownService.turndown(child.outerHTML || child.textContent);
-              }
-            }
-
-            result += indent + prefix + itemContent.trim().replace(/\n/g, '\n' + indent + '    ') + '\n';
-          }
-        }
-        return result;
-      }
-
-      output = processList(node, indentLevel);
-      return output;
-    }
-  });
+function updateMarkdown() {
+  if (isUpdating) return;
+  isUpdating = true;
+  var htmlText = htmlEditor.value;
+  turndownService = new TurndownService(getTurndownOptions());
 
   turndownService.addRule('tables', {
     filter: function (node) {
@@ -116,33 +92,7 @@ function addCustomRules(turndownService) {
       return '\n\n' + table.join('\n') + '\n\n';
     }
   });
-}
 
-var initialOptions = loadPreferences();
-var turndownService = new TurndownService(initialOptions);
-addCustomRules(turndownService);
-
-var markdownEditor = document.getElementById('markdownEditor');
-var htmlEditor = document.getElementById('htmlEditor');
-var htmlOutput = document.getElementById('htmlOutput');
-var isUpdating = false;
-
-function updateHTML() {
-  if (isUpdating) return;
-  isUpdating = true;
-  var markdownText = markdownEditor.value;
-  var html = converter.makeHtml(markdownText);
-  htmlEditor.value = html;
-  htmlOutput.innerHTML = html;
-  isUpdating = false;
-}
-
-function updateMarkdown() {
-  if (isUpdating) return;
-  isUpdating = true;
-  var htmlText = htmlEditor.value;
-  turndownService = new TurndownService(getTurndownOptions());
-  addCustomRules(turndownService);
   var markdown = turndownService.turndown(htmlText);
   markdownEditor.value = markdown;
   htmlOutput.innerHTML = htmlText;
@@ -151,27 +101,27 @@ function updateMarkdown() {
 
 markdownEditor.addEventListener('input', updateHTML);
 htmlEditor.addEventListener('input', updateMarkdown);
-
 var optionElements = document.querySelectorAll('.option select');
-optionElements.forEach(function (element) {
-  element.addEventListener('change', function () {
-    savePreferences();
-    updateMarkdown();
+  optionElements.forEach(function(element) {
+    element.addEventListener('change', function() {
+      savePreferences();
+      updateMarkdown();
+    });
   });
-});
-
 updateHTML();
 
 function copyMarkdown() {
-  navigator.clipboard.writeText(markdownEditor.value).catch(err => {
-    console.error('Error while copying Markdown: ', err);
-  });
+  navigator.clipboard.writeText(markdownEditor.value)
+    .catch(err => {
+      console.error('Error while copying Markdown: ', err);
+    });
 }
 
 function copyHTML() {
-  navigator.clipboard.writeText(htmlEditor.value).catch(err => {
-    console.error('Error while copying HTML: ', err);
-  });
+  navigator.clipboard.writeText(htmlEditor.value)
+    .catch(err => {
+      console.error('Error while copying HTML: ', err);
+    });
 }
 
 function copyPreview() {
@@ -193,40 +143,59 @@ function copyPreview() {
 }
 
 function pasteClipboard() {
-  navigator.clipboard
-    .read()
-    .then(items => {
-      let clipboardHTML = null;
-      let clipboardText = null;
-      for (const item of items) {
-        if (item.types.includes('text/html')) {
-          item.getType('text/html').then(blob => {
-            blob.text().then(html => {
-              clipboardHTML = html;
-              convertAndInsert(clipboardHTML, true);
-            });
+  navigator.clipboard.read().then((items) => {
+    let clipboardHTML = null;
+    let clipboardText = null;
+    for (const item of items) {
+      if (item.types.includes('text/html')) {
+        item.getType('text/html').then(blob => {
+          blob.text().then(html => {
+            clipboardHTML = html;
+            convertAndInsert(clipboardHTML, true);
           });
-        } else if (item.types.includes('text/plain')) {
-          item.getType('text/plain').then(blob => {
-            blob.text().then(text => {
-              clipboardText = text;
-              if (!clipboardHTML) {
-                convertAndInsert(clipboardText, false);
-              }
-            });
+        });
+      } else if (item.types.includes('text/plain')) {
+        item.getType('text/plain').then(blob => {
+          blob.text().then(text => {
+            clipboardText = text;
+            if (!clipboardHTML) {
+              convertAndInsert(clipboardText, false);
+            }
           });
-        }
+        });
       }
-    })
-    .catch(err => {
-      console.error('Error while importing clipboard:', err);
-    });
+    }
+  }).catch(err => {
+    console.error('Error while importing clipboard:', err);
+  });
 }
 
 function convertAndInsert(content, isHTML) {
+  
   var initialOptions = loadPreferences();
   var turndownService = new TurndownService(initialOptions);
-  addCustomRules(turndownService);
+
+  turndownService.addRule('tables', {
+    filter: ['table'],
+    replacement: function (content, node) {
+      var table = [];
+      var rows = node.querySelectorAll('tr');
+      rows.forEach(function (row) {
+        var cells = row.querySelectorAll('td, th');
+        var rowContent = Array.from(cells).map(function (cell) {
+          return cell.textContent.trim();
+        }).join(' | ');
+        table.push(rowContent);
+      });
+
+      if (table.length > 1) {
+        var headerSeparator = table[0].replace(/[^|]/g, '-');
+        table.splice(1, 0, headerSeparator);
+      }
+
+      return '\n\n' + table.join('\n') + '\n\n';
+    }
+  });
 
   let markdown = '';
   if (isHTML) {
