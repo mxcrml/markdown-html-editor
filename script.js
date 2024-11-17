@@ -175,6 +175,27 @@ function convertAndInsert(content, isHTML) {
   var initialOptions = loadPreferences();
   var turndownService = new TurndownService(initialOptions);
 
+  // Fix for bullet list not rendering properly
+turndownService.addRule('orderedListNumbers', {
+  filter: function (node, options) {
+    return node.nodeName === 'OL';
+  },
+  replacement: function (content, node, options) {
+    var output = '';
+    var start = node.getAttribute('start') || 1;
+    start = parseInt(start, 10);
+
+    Array.from(node.children).forEach(function (child, index) {
+      if (child.nodeName === 'LI') {
+        var line = (start + index) + '. ' + turndownService.turndown(child.innerHTML);
+        output += line + '\n';
+      }
+    });
+
+    return output + '\n';
+  }
+});
+
   turndownService.addRule('tables', {
     filter: ['table'],
     replacement: function (content, node) {
