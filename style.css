@@ -156,7 +156,7 @@ body.dark-mode .footer a {
   color: #f0f0f0;
 }
 
-/* Toggle emojis */
+/* Icônes du bouton de mode */
 button.toggle-mode::before {
   content: "🌑";
 }
@@ -211,4 +211,66 @@ body.dark-mode button.toggle-mode::before {
   .html-code {
     height: 400px;
   }
+}
+
+/* Add these styles for better list formatting */
+.preview .output ol {
+    counter-reset: none;
+    list-style: decimal;
+}
+
+.preview .output ol ol {
+    list-style: lower-alpha;
+}
+
+.preview .output ul {
+    list-style: disc;
+}
+
+.preview .output ol li,
+.preview .output ul li {
+    margin-left: 1em;
+}
+
+.preview .output li > ul,
+.preview .output li > ol {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+/* Dark mode for editors */
+body.dark-mode #markdownEditor,
+body.dark-mode #htmlEditor {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    border-color: #404040;
+}
+
+/* CodeMirror customization */
+.CodeMirror {
+  height: 500px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+body.dark-mode .CodeMirror {
+  border-color: #404040;
+}
+
+/* CodeMirror full height */
+.editor, .html-code {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.CodeMirror {
+    flex: 1;
+    height: auto !important;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+body.dark-mode .CodeMirror {
+    border-color: #404040;
 }

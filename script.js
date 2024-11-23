@@ -287,3 +287,54 @@ markdownEditor.addEventListener('keydown', function(e) {
         updateHTML();
     }
 });
+
+// Initialiser les éditeurs CodeMirror après le chargement du DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser l'éditeur Markdown
+    var markdownEditor = CodeMirror.fromTextArea(document.getElementById('markdownEditor'), {
+        mode: 'markdown',
+        theme: 'default',
+        lineNumbers: true,
+        lineWrapping: true,
+        tabSize: 4,
+        indentWithTabs: false,
+        extraKeys: {
+            'Tab': function(cm) {
+                cm.replaceSelection('    ', 'end');
+            }
+        }
+    });
+
+    // Initialiser l'éditeur HTML
+    var htmlEditor = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), {
+        mode: 'xml',
+        theme: 'default',
+        lineNumbers: true,
+        lineWrapping: true,
+        readOnly: true
+    });
+
+    // Mettre à jour les event listeners pour utiliser les instances CodeMirror
+    markdownEditor.on('change', function() {
+        if (isUpdating) return;
+        isUpdating = true;
+        
+        var markdownText = markdownEditor.getValue();
+        markdownText = normalizeMarkdownIndentation(markdownText);
+        var html = converter.makeHtml(markdownText);
+        
+        htmlEditor.setValue(html);
+        htmlOutput.innerHTML = html;
+        isUpdating = false;
+    });
+
+    // Modifier la fonction toggleMode pour supporter les thèmes CodeMirror
+    window.toggleMode = function() {
+        document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        const theme = isDarkMode ? 'monokai' : 'default';
+        
+        markdownEditor.setOption('theme', theme);
+        htmlEditor.setOption('theme', theme);
+    };
+});
