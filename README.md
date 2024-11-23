@@ -1,9 +1,9 @@
 # Markdown/HTML Editor
 
-This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdown.js](https://github.com/showdownjs/showdown)*, *[Turndown.js](https://github.com/domchristie/turndown)* and *[CodeMirror 6](https://codemirror.net/)*. It enables seamless writing, conversion, and real-time preview of both Markdown and HTML, making it an ideal tool for SEO professionals, copywriters, and anyone frequently switching between these formats.
+This is a powerful yet easy-to-use **Markdown/HTML editor** built with *[Showdown.js](https://github.com/showdownjs/showdown)*, *[Turndown.js](https://github.com/domchristie/turndown)* and *[CodeMirror](https://codemirror.net/)*. It enables seamless writing, conversion, and real-time preview of both Markdown and HTML, making it an ideal tool for SEO professionals, copywriters, and anyone frequently switching between these formats.
 
 ## Preview
-<img width="100%" alt="markdown-html-editor-v2-preview-rich" src="https://github.com/user-attachments/assets/fe21927d-4207-4535-b7d2-5970557db029">
+<img width="100%" alt="markdown-html-editor-v2-preview-rich" src="https://github.com/user-attachments/assets/8240fc24-bc7c-4249-bf5b-4545991a04f3">
 
 ## Features
 
