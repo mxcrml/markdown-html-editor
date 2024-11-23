@@ -49,11 +49,46 @@ var htmlEditor = document.getElementById('htmlEditor');
 var htmlOutput = document.getElementById('htmlOutput');
 var isUpdating = false;
 
+function normalizeMarkdownIndentation(markdown) {
+    const lines = markdown.split('\n');
+    const processedLines = [];
+    let inOrderedList = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        
+        // Détection d'un élément de liste numérotée
+        if (/^\d+\.\s+/.test(line)) {
+            inOrderedList = true;
+            // Normalise l'espacement après le numéro
+            line = line.replace(/^(\d+\.\s*)/, '$1  ');
+            processedLines.push(line);
+        }
+        // Détection d'une puce
+        else if (line.trim().startsWith('-')) {
+            if (inOrderedList) {
+                // Assure un indentation de 4 espaces pour les puces sous une liste numérotée
+                line = '    ' + line.trim();
+            }
+            processedLines.push(line);
+        }
+        else {
+            inOrderedList = false;
+            processedLines.push(line);
+        }
+    }
+    
+    return processedLines.join('\n');
+}
+
 function updateHTML() {
   if (isUpdating) return;
   isUpdating = true;
-  var markdownText = markdownEditor.value;
+  
+  // Normalise l'indentation avant la conversion
+  var markdownText = normalizeMarkdownIndentation(markdownEditor.value);
   var html = converter.makeHtml(markdownText);
+  
   htmlEditor.value = html;
   htmlOutput.innerHTML = html;
   isUpdating = false;
@@ -125,21 +160,38 @@ function copyHTML() {
 }
 
 function copyPreview() {
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = htmlOutput.innerHTML;
-  document.body.appendChild(tempDiv);
-  const range = document.createRange();
-  range.selectNodeContents(tempDiv);
-  const selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(range);
-  try {
-    document.execCommand('copy');
-  } catch (err) {
-    console.error('Error while copying Preview: ', err);
-  }
-  selection.removeAllRanges();
-  document.body.removeChild(tempDiv);
+    // Créer un élément temporaire pour le nettoyage
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlOutput.innerHTML;
+
+    // Nettoyer tous les styles inline et classes
+    function cleanNode(node) {
+        if (node.nodeType === 1) { // Element node
+            // Supprimer tous les attributs sauf ceux essentiels à la structure
+            const attrs = node.attributes;
+            for (let i = attrs.length - 1; i >= 0; i--) {
+                const attrName = attrs[i].name;
+                if (!['href', 'src'].includes(attrName)) {
+                    node.removeAttribute(attrName);
+                }
+            }
+            
+            // Nettoyer récursivement les enfants
+            Array.from(node.children).forEach(cleanNode);
+        }
+    }
+
+    cleanNode(tempDiv);
+
+    // Créer un blob avec le HTML nettoyé
+    const blob = new Blob([tempDiv.innerHTML], { type: 'text/html' });
+    const clipboardItem = new ClipboardItem({ 'text/html': blob });
+    
+    // Copier dans le presse-papier
+    navigator.clipboard.write([clipboardItem])
+        .catch(err => {
+            console.error('Error while copying Preview: ', err);
+        });
 }
 
 function pasteClipboard() {
@@ -215,3 +267,23 @@ function insertIntoEditor(markdown) {
 function toggleMode() {
   document.body.classList.toggle('dark-mode');
 }
+
+markdownEditor.addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        
+        // Get cursor position
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        
+        // Insert tab
+        const spaces = '    ';
+        this.value = this.value.substring(0, start) + spaces + this.value.substring(end);
+        
+        // Put cursor after tab
+        this.selectionStart = this.selectionEnd = start + spaces.length;
+        
+        // Trigger update
+        updateHTML();
+    }
+});
