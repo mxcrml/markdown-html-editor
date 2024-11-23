@@ -97,7 +97,8 @@ function updateHTML() {
 function updateMarkdown() {
   if (isUpdating) return;
   isUpdating = true;
-  var htmlText = htmlEditor.value;
+  
+  var htmlText = htmlEditorCM.getValue();
   turndownService = new TurndownService(getTurndownOptions());
 
   turndownService.addRule('tables', {
@@ -129,7 +130,7 @@ function updateMarkdown() {
   });
 
   var markdown = turndownService.turndown(htmlText);
-  markdownEditor.value = markdown;
+  markdownEditorCM.setValue(markdown);
   htmlOutput.innerHTML = htmlText;
   isUpdating = false;
 }
@@ -195,73 +196,76 @@ function copyPreview() {
 }
 
 function pasteClipboard() {
-  navigator.clipboard.read().then((items) => {
-    let clipboardHTML = null;
-    let clipboardText = null;
-    for (const item of items) {
-      if (item.types.includes('text/html')) {
-        item.getType('text/html').then(blob => {
-          blob.text().then(html => {
-            clipboardHTML = html;
-            convertAndInsert(clipboardHTML, true);
-          });
-        });
-      } else if (item.types.includes('text/plain')) {
-        item.getType('text/plain').then(blob => {
-          blob.text().then(text => {
-            clipboardText = text;
-            if (!clipboardHTML) {
-              convertAndInsert(clipboardText, false);
+    navigator.clipboard.read().then((items) => {
+        let clipboardHTML = null;
+        let clipboardText = null;
+        for (const item of items) {
+            if (item.types.includes('text/html')) {
+                item.getType('text/html').then(blob => {
+                    blob.text().then(html => {
+                        clipboardHTML = html;
+                        convertAndInsert(clipboardHTML, true);
+                    });
+                });
+            } else if (item.types.includes('text/plain')) {
+                item.getType('text/plain').then(blob => {
+                    blob.text().then(text => {
+                        clipboardText = text;
+                        if (!clipboardHTML) {
+                            convertAndInsert(clipboardText, false);
+                        }
+                    });
+                });
             }
-          });
-        });
-      }
-    }
-  }).catch(err => {
-    console.error('Error while importing clipboard:', err);
-  });
+        }
+    }).catch(err => {
+        console.error('Error while importing clipboard:', err);
+    });
 }
 
 function convertAndInsert(content, isHTML) {
-  
-  var initialOptions = loadPreferences();
-  var turndownService = new TurndownService(initialOptions);
+    var initialOptions = loadPreferences();
+    var turndownService = new TurndownService(initialOptions);
 
-  turndownService.addRule('tables', {
-    filter: ['table'],
-    replacement: function (content, node) {
-      var table = [];
-      var rows = node.querySelectorAll('tr');
-      rows.forEach(function (row) {
-        var cells = row.querySelectorAll('td, th');
-        var rowContent = Array.from(cells).map(function (cell) {
-          return cell.textContent.trim();
-        }).join(' | ');
-        table.push(rowContent);
-      });
+    turndownService.addRule('tables', {
+        filter: ['table'],
+        replacement: function (content, node) {
+            var table = [];
+            var rows = node.querySelectorAll('tr');
+            rows.forEach(function (row) {
+                var cells = row.querySelectorAll('td, th');
+                var rowContent = Array.from(cells).map(function (cell) {
+                    return cell.textContent.trim();
+                }).join(' | ');
+                table.push(rowContent);
+            });
 
-      if (table.length > 1) {
-        var headerSeparator = table[0].replace(/[^|]/g, '-');
-        table.splice(1, 0, headerSeparator);
-      }
+            if (table.length > 1) {
+                var headerSeparator = table[0].replace(/[^|]/g, '-');
+                table.splice(1, 0, headerSeparator);
+            }
 
-      return '\n\n' + table.join('\n') + '\n\n';
+            return '\n\n' + table.join('\n') + '\n\n';
+        }
+    });
+
+    let markdown = '';
+    if (isHTML) {
+        markdown = turndownService.turndown(content);
+    } else {
+        markdown = content;
     }
-  });
-
-  let markdown = '';
-  if (isHTML) {
-    markdown = turndownService.turndown(content);
-  } else {
-    markdown = content;
-  }
-  insertIntoEditor(markdown);
+    insertIntoEditor(markdown);
 }
 
 function insertIntoEditor(markdown) {
-  var markdownEditor = document.getElementById('markdownEditor');
-  markdownEditor.value += markdown;
-  updateHTML();
+    // Utiliser l'instance CodeMirror pour insérer le contenu
+    const doc = markdownEditorCM.getDoc();
+    const cursor = doc.getCursor();
+    doc.replaceRange(markdown, cursor);
+    
+    // Déclencher la mise à jour
+    markdownEditorCM.focus();
 }
 
 function toggleMode() {
@@ -288,10 +292,14 @@ markdownEditor.addEventListener('keydown', function(e) {
     }
 });
 
+// Variables globales pour stocker les instances CodeMirror
+let markdownEditorCM;
+let htmlEditorCM;
+
 // Initialiser les éditeurs CodeMirror après le chargement du DOM
 document.addEventListener('DOMContentLoaded', function() {
     // Initialiser l'éditeur Markdown
-    var markdownEditor = CodeMirror.fromTextArea(document.getElementById('markdownEditor'), {
+    markdownEditorCM = CodeMirror.fromTextArea(document.getElementById('markdownEditor'), {
         mode: 'markdown',
         theme: 'default',
         lineNumbers: true,
@@ -306,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Initialiser l'éditeur HTML
-    var htmlEditor = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), {
+    htmlEditorCM = CodeMirror.fromTextArea(document.getElementById('htmlEditor'), {
         mode: 'xml',
         theme: 'default',
         lineNumbers: true,
@@ -314,16 +322,16 @@ document.addEventListener('DOMContentLoaded', function() {
         readOnly: true
     });
 
-    // Mettre à jour les event listeners pour utiliser les instances CodeMirror
-    markdownEditor.on('change', function() {
+    // Mettre à jour les event listeners
+    markdownEditorCM.on('change', function() {
         if (isUpdating) return;
         isUpdating = true;
         
-        var markdownText = markdownEditor.getValue();
+        var markdownText = markdownEditorCM.getValue();
         markdownText = normalizeMarkdownIndentation(markdownText);
         var html = converter.makeHtml(markdownText);
         
-        htmlEditor.setValue(html);
+        htmlEditorCM.setValue(html);
         htmlOutput.innerHTML = html;
         isUpdating = false;
     });
@@ -334,7 +342,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const isDarkMode = document.body.classList.contains('dark-mode');
         const theme = isDarkMode ? 'monokai' : 'default';
         
-        markdownEditor.setOption('theme', theme);
-        htmlEditor.setOption('theme', theme);
+        markdownEditorCM.setOption('theme', theme);
+        htmlEditorCM.setOption('theme', theme);
     };
 });
+
+// Fonctions de copie mises à jour
+function copyMarkdown() {
+    navigator.clipboard.writeText(markdownEditorCM.getValue())
+        .catch(err => {
+            console.error('Error while copying Markdown: ', err);
+        });
+}
+
+function copyHTML() {
+    navigator.clipboard.writeText(htmlEditorCM.getValue())
+        .catch(err => {
+            console.error('Error while copying HTML: ', err);
+        });
+}
+
+// Mise à jour de la fonction toggleMode
+function toggleMode() {
+    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    const theme = isDarkMode ? 'monokai' : 'default';
+    
+    markdownEditorCM.setOption('theme', theme);
+    htmlEditorCM.setOption('theme', theme);
+}
